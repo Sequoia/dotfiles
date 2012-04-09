@@ -1,0 +1,9 @@
+ansi=1
+#urlopen=open %U
+urlopen=curl --data "action=urlopen&url=%U" 10.0.2.2:9090
+readline=""
+exts=/home/sequoia/.ttytter/extensions/funnelfiasco-ttytter-r2a-1289b95/ttytter-r2a.pl
+slowpost=5
+#notifytype=growl
+mentions=1
+timestamp=%a-%k:%M

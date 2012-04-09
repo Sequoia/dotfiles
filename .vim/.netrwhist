@@ -1,0 +1,5 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =3
+let g:netrw_dirhist_1='/stordisk/Applications/LEX/config'
+let g:netrw_dirhist_2='/stordisk/Applications/LEX/app/webroot/js/jwplayer'
+let g:netrw_dirhist_3='/stordisk/Applications/LEX/app/views/elements/by_language/zh-cn'
