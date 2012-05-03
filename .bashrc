@@ -1,5 +1,5 @@
 # .bashrc
-cd /Applications/LEX/app;
+#cd /Applications/LEX/app;
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then
@@ -22,7 +22,10 @@ function def () { curl dict://dict.org/d:"$1" ; }
 alias clrs='n=$(tput colors) sgr0=$(tput sgr0); for ((i=0;i<n;i++)); do c=$(tput setab $i); printf '\''%3d: %s%20s %s %q\n'\'' "$i" "$c" "" "$sgr0" "$c"; done'
 
 # Source my FTWin stuff
-. ~/FTWin/FTWin.sh
+if [ -e "$HOME/FTWin" ]
+then
+	. ~/FTWin/FTWin.sh
+fi
 
 #for hastebin:
 haste() { curl -sd "$(cat $1)" http://hastebin.com/documents | sed -e 's/{"key":"/http:\/\/hastebin.com\//' -e "s/\"}/\.$(echo $1 | sed -e 's/.*\.//')\n/"; }
@@ -34,7 +37,11 @@ export EDITOR=`which vim`
 git config --global user.name "Sequoia McDowell"
 git config --global user.email sequoia.mcdowell@gmail.com
 export GIT_SSL_NO_VERIFY=true
-
+# git aliases
+alias gco="git checkout"
+alias gst="git status"
+alias gcm="git commit -v" 
+alias gb="git branch" 
 #misc
 function jpgto(){
 	local jptkeyword=$1;
