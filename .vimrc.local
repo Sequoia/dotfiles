@@ -1,0 +1,216 @@
+" I like the leader as , rather than \ sm_com
+let mapleader = ','
+" Better command-line completion
+" set wildmenu
+
+" Show partial commands in the last line of the screen
+" "set showcmd
+
+" Highlight searches (use <C-L> to temporarily turn off highlighting; see the
+" mapping of <C-L> below)
+set hlsearch
+
+" Instead of failing a command because of unsaved changes, instead raise a
+" dialogue asking if you wish to save changed files.
+set confirm
+
+" Set the command window height to 2 lines, to avoid many cases of having to
+" "press <Enter> to continue"
+""set cmdheight=2
+
+" Display line numbers on the left
+set number
+
+" Quickly time out on keycodes, but never time out on mappings
+set notimeout ttimeout ttimeoutlen=200
+
+" Use <F11> to toggle between 'paste' and 'nopaste'
+set pastetoggle=<F11>
+
+"------------------------------------------------------------
+" Indentation options {{{1
+"
+" Indentation settings according to personal preference.
+
+" Indentation settings for using 2 spaces instead of tabs.
+" Do not change 'tabstop' from its default value of 8 with this setup.
+set shiftwidth=2
+set softtabstop=2
+set tabstop=2
+set noexpandtab
+
+" Indentation settings for using hard tabs for indent. Display tabs as
+" two characters wide.
+"set shiftwidth=2
+"set tabstop=2
+" }}}
+
+"------------------------------------------------------------
+" Mappings {{{1
+"
+" Useful mappings
+
+" Map Y to act like D and C, i.e. to yank until EOL, rather than act as yy,
+" which is the default
+map Y y$
+
+" Map <C-L> (redraw screen) to also turn off search highlighting until the
+" next search
+nnoremap <C-L> :nohl<CR><C-L>
+" }}}
+"------------------------------------------------------------
+
+"-----------------------------------------------------------
+" Sequoia's Stuff
+"
+
+" colorcolumn
+set colorcolumn=80
+:hi colorcolumn ctermbg=gray
+
+"highlight cake ctp files as php
+" au BufNewFile,BufRead *.ctp setfiletype php
+" au BufNewFile,BufRead *.less setfiletype less
+
+"use jk for esc
+:imap jk <Esc>
+
+" Shortcut to rapidly toggle `set list` (show invisibles)
+nmap <leader>l :set list!<CR>
+" Shortcut for TagsList
+nmap <special> <F8> :TlistToggle<cR>
+
+" Use the same symbols as TextMate for tabstops and EOLs
+" need unicode or something for this
+"set listchars=tab:▸\ ,eol:¬
+
+let php_folding = 1
+
+" set smarttab
+
+" persistent undo
+"set undofile
+
+" allow tabbing with a single <
+nmap < <<
+nmap > >>
+" allow it for visual mode (then reselect the section)
+"vmap < <gv
+"vmap > >gv
+
+function! SetSoftTab(n)
+    "for changing tabstops
+    let &l:shiftwidth=a:n
+    let &l:softtabstop=a:n
+    let &l:expandtab=1
+endfunction
+	
+function! SetHardTab()
+    let &l:expandtab=0
+    let &l:shiftwidth=4
+endfunction
+
+" maps to set tabstops quickly
+nmap <leader>2 :call SetSoftTab(2)<CR>
+nmap <leader>4 :call SetSoftTab(4)<CR>
+nmap <leader>0 :call SetHardTab()<CR>
+
+" nmap <leader>t :TlistToggle<CR>
+" change (.) to ( . )
+nmap <leader>( cs((
+" set paste to nopaste and back
+" nmap <leader>p :set paste!<ENTER>
+
+"toggle true to false
+nore <expr> <leader>f expand('<cword>') ==# 'true' ? "ciwfalse\<Esc>" : (expand('<cword>') ==# 'false' ? "ciwtrue\<Esc>" : '')
+"ftclip
+"this is probably going to require writing a plugin
+"map <leader>f :!. ~/.bashrc && echo shellescape( <C-r>" ) \| ftclip <CR>
+
+" Ddiff functions
+function ShowDiff(a,b)
+    " I expect neither string to contain '@@'
+    let start = matchstr(a:a.'@@'.a:b, '^\zs\(.*\)\ze.\{-}@@\1.*$')
+    let end= matchstr(a:a.'@@'.a:b, '^.\{-}\zs\(.*\)\ze@@.\{-}\1$')
+    let a = a:a[len(start): -len(end)-1]
+    let b = a:b[len(start): -len(end)-1]
+    echo "identical beginning: ".strlen(start )." chars -> ".start
+    echo "identical ending   : ".strlen(end)." chars -> ".end
+    echo "typical to a       : ".strlen(a)." chars -> ".a
+    echo "typical to b       : ".strlen(b)." chars -> ".b
+endfunction
+
+let g:diffed_buffers=[]
+function DiffText(a, b, diffed_buffers)
+    enew
+    setlocal buftype=nowrite
+    call add(a:diffed_buffers, bufnr('%'))
+    call setline(1, split(a:a, "\n"))
+    diffthis
+    vnew
+    setlocal buftype=nowrite
+    call add(a:diffed_buffers, bufnr('%'))
+    call setline(1, split(a:b, "\n"))
+    diffthis
+endfunction
+function WipeOutDiffs(diffed_buffers)
+    for buffer in a:diffed_buffers
+        execute 'bwipeout! '.buffer
+    endfor
+endfunction
+nnoremap <special> <F7> :call DiffText(@a, @b, g:diffed_buffers)<CR>
+nnoremap <special> <F8> :call WipeOutDiffs(g:diffed_buffers)<CR>
+
+" NOT YET WORKING:
+" Transposing {{{
+function! MoveLineUp()
+  call MoveLineOrVisualUp(".", "")
+endfunction
+
+function! MoveLineDown()
+  call MoveLineOrVisualDown(".", "")
+endfunction
+
+function! MoveVisualUp()
+  call MoveLineOrVisualUp("'<", "'<,'>")
+  normal gv
+endfunction
+
+function! MoveVisualDown()
+  call MoveLineOrVisualDown("'>", "'<,'>")
+  normal gv
+endfunction
+
+function! MoveLineOrVisualUp(line_getter, range)
+  let l_num = line(a:line_getter)
+  if l_num - v:count1 - 1 < 0
+    let move_arg = "0"
+  else
+    let move_arg = a:line_getter." -".(v:count1 + 1)
+  endif
+  call MoveLineOrVisualUpOrDown(a:range."move ".move_arg)
+endfunction
+
+function! MoveLineOrVisualDown(line_getter, range)
+  let l_num = line(a:line_getter)
+  if l_num + v:count1 > line("$")
+    let move_arg = "$"
+  else
+    let move_arg = a:line_getter." +".v:count1
+  endif
+  call MoveLineOrVisualUpOrDown(a:range."move ".move_arg)
+endfunction
+
+function! MoveLineOrVisualUpOrDown(move_arg)
+  let col_num = virtcol(".")
+  execute "silent! ".a:move_arg
+  execute "normal! ".col_num."|"
+endfunction
+
+nnoremap <silent> <C-Up> :<C-u>call MoveLineUp()<CR>
+nnoremap <silent> <C-Down> :<C-u>call MoveLineDown()<CR>
+inoremap <silent> <C-Up> <C-o>:<C-u>call MoveLineUp()<CR>
+inoremap <silent> <C-Down> <C-o>:<C-u>call MoveLineDown()<CR>
+vnoremap <silent> <C-Up> :<C-u>call MoveVisualUp()<CR>
+vnoremap <silent> <C-Down> :<C-u>call MoveVisualDown()<CR>
+" End Transposing }}}
