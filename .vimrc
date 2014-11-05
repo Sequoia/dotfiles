@@ -186,15 +186,60 @@ nmap <special> <F8> :TlistToggle<cR>
 set listchars=tab:▸\ ,eol:¬
 let php_folding = 1
 
-" For pathogen:
-call pathogen#infect()
-" To generate helptags on any new plugins in the pathogen path:
-Helptags
+" " For pathogen:
+" call pathogen#infect()
+" " To generate helptags on any new plugins in the pathogen path:
+" Helptags
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'gmarik/Vundle.vim'
+
+" The following are examples of different formats supported.
+" Keep Plugin commands between vundle#begin/end.
+" syntastic
+Plugin 'scrooloose/syntastic'
+" ^-configure
+" powerline
+Plugin 'Lokaltog/powerline'
+" surround
+Plugin 'tpope/vim-surround'
+" fugitive
+Plugin 'tpope/vim-fugitive'
+" unimpaired
+Plugin 'tpope/vim-unimpaired'
+" undotree
+Plugin 'mbbill/undotree'
+" ctrlp
+Plugin 'kien/ctrlp.vim'
+" yankring
+Plugin 'vim-scripts/YankRing.vim'
+" nerdtree
+Plugin 'scrooloose/nerdtree'
+" nerdcommenter
+Plugin 'scrooloose/nerdcommenter'
+" snippets
+	Plugin 'SirVer/ultisnips'
+	Plugin 'honza/vim-snippets'
+	" Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
+	let g:UltiSnipsExpandTrigger="<tab>"
+	let g:UltiSnipsJumpForwardTrigger="<c-b>"
+	let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+	" If you want :UltiSnipsEdit to split your window.
+	" let g:UltiSnipsEditSplit="vertical"
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
 
 set smarttab
 
-" To launch php docs in links:
-set keywordprg=~/.vim/php_doc.sh
 " persistent undo
 "set undofile
 
