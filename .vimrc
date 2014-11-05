@@ -159,10 +159,10 @@ nnoremap <C-L> :nohl<CR><C-L>
 "
 
 " Status line
-:hi statuslinenc ctermbg=black
-:hi statuslinenc ctermfg=green
-:hi statusline ctermbg=white
-:hi statusline ctermfg=red
+" :hi statuslinenc ctermbg=black
+" :hi statuslinenc ctermfg=green
+" :hi statusline ctermbg=white
+" :hi statusline ctermfg=red
 
 
 " colorcolumn
@@ -193,7 +193,7 @@ let php_folding = 1
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+call vundle#begin('~/vim_local_bundles')
 " alternatively, pass a path where Vundle should install plugins
 "call vundle#begin('~/some/path/here')
 
@@ -206,7 +206,9 @@ Plugin 'gmarik/Vundle.vim'
 Plugin 'scrooloose/syntastic'
 " ^-configure
 " powerline
-Plugin 'Lokaltog/powerline'
+Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
+set t_Co=256
+let g:Powerline_symbols = "fancy"
 " surround
 Plugin 'tpope/vim-surround'
 " fugitive
@@ -219,8 +221,10 @@ Plugin 'mbbill/undotree'
 Plugin 'kien/ctrlp.vim'
 " yankring
 Plugin 'vim-scripts/YankRing.vim'
+nmap <leader>y :YRShow<CR>
 " nerdtree
 Plugin 'scrooloose/nerdtree'
+map <F12> :NERDTreeToggle<CR>
 " nerdcommenter
 Plugin 'scrooloose/nerdcommenter'
 " snippets
